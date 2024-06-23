@@ -9,7 +9,6 @@
 #define USERNAME_MAX_LENGTH 50
 #define PASSWORD_MAX_LENGTH 50
 
-// 학생 정보 구조체
 struct student {
     char name[30];
     char dob[11];
@@ -20,18 +19,16 @@ struct student {
     struct student* NEXT;
 };
 
-// 책 정보 구조체
 struct book {
     char title[50];
     char author[30];
     char publisher[30];
     char pub_date[11];
     char loan_date[11];
-    int available; // 1: 이용 가능, 0: 대출 중
+    int available;
     struct book* NEXT;
 };
 
-// 전역 변수 선언
 typedef struct Node {
     char username[USERNAME_MAX_LENGTH];
     char password[PASSWORD_MAX_LENGTH];
@@ -45,7 +42,6 @@ struct book* head_book = NULL;
 struct book* tail_book = NULL;
 char currentUser[USERNAME_MAX_LENGTH];
 
-// 콘솔 커서 위치 설정
 void setCursorPosition(int x, int y) {
     COORD coord;
     coord.X = x;
@@ -53,12 +49,10 @@ void setCursorPosition(int x, int y) {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-// 콘솔 화면 지우기
 void clearScreen() {
     system("cls");
 }
 
-// 메인 메뉴 출력
 void showMainMenu(int selectedOption) {
     clearScreen();
     setCursorPosition(0, 0);
@@ -71,7 +65,6 @@ void showMainMenu(int selectedOption) {
     printf("==============================\n");
 }
 
-// 로그인 후 메뉴 출력
 void showLoggedInMenu(int selectedOption) {
     clearScreen();
     setCursorPosition(0, 0);
@@ -91,7 +84,6 @@ void showLoggedInMenu(int selectedOption) {
     printf("==============================\n");
 }
 
-// 사용자 이름이 이미 존재하는지 확인
 int isUserExists(const char* username) {
     Node* current = head;
     while (current != NULL) {
@@ -103,10 +95,9 @@ int isUserExists(const char* username) {
     return 0;
 }
 
-// 사용자 추가
 int addUser(const char* username, const char* password) {
     if (isUserExists(username)) {
-        return 0; // 사용자명이 중복되면 추가하지 않음
+        return 0;
     }
     Node* newNode = (Node*)malloc(sizeof(Node));
     strcpy(newNode->username, username);
@@ -140,10 +131,9 @@ void handleSignUp() {
         printf("이미 존재하는 ID입니다!\n");
     }
 
-    system("pause"); // 결과를 확인할 수 있도록 일시 정지
+    system("pause");
 }
 
-// 로그인 시도
 int login(const char* username, const char* password) {
     Node* current = head;
     while (current != NULL) {
@@ -156,7 +146,6 @@ int login(const char* username, const char* password) {
     return 0;
 }
 
-// 파일에서 사용자 정보를 로드
 void loadUsersFromFile() {
     FILE* file = fopen(USERS_FILE, "r");
     if (file != NULL) {
@@ -169,12 +158,10 @@ void loadUsersFromFile() {
     }
 }
 
-// 학생 정보 파일 이름 생성
 void getStudentFileName(char* filename) {
     sprintf(filename, "%s_students.txt", currentUser);
 }
 
-// 파일에서 학생 정보를 로드
 void loadStudentsFromFile() {
     char filename[100];
     getStudentFileName(filename);
@@ -202,7 +189,6 @@ void loadStudentsFromFile() {
     }
 }
 
-// 파일에 학생 정보를 저장
 void saveStudentsToFile() {
     char filename[100];
     getStudentFileName(filename);
@@ -218,12 +204,10 @@ void saveStudentsToFile() {
     }
 }
 
-// 책 정보 파일 이름 생성
 void getBookFileName(char* filename) {
     sprintf(filename, "%s_books.txt", currentUser);
 }
 
-// 파일에서 책 정보를 로드
 void loadBooksFromFile() {
     char filename[100];
     getBookFileName(filename);
@@ -251,7 +235,6 @@ void loadBooksFromFile() {
     }
 }
 
-// 파일에 책 정보를 저장
 void saveBooksToFile() {
     char filename[100];
     getBookFileName(filename);
@@ -267,7 +250,6 @@ void saveBooksToFile() {
     }
 }
 
-// 로그인 처리 함수
 int handleLogin() {
     clearScreen();
     setCursorPosition(0, 0);
@@ -283,7 +265,6 @@ int handleLogin() {
     if (login(username, password)) {
         printf("로그인에 성공하셨습니다!\n");
 
-        // 기존 학생 정보 초기화
         struct student* temp_student = head_student;
         while (temp_student != NULL) {
             struct student* toFree = temp_student;
@@ -293,7 +274,6 @@ int handleLogin() {
         head_student = NULL;
         tail_student = NULL;
 
-        // 기존 책 정보 초기화
         struct book* temp_book = head_book;
         while (temp_book != NULL) {
             struct book* toFree = temp_book;
@@ -303,19 +283,18 @@ int handleLogin() {
         head_book = NULL;
         tail_book = NULL;
 
-        loadStudentsFromFile(); // 사용자 학생 정보 로드
-        loadBooksFromFile(); // 사용자 책 정보 로드
-        system("pause"); // 결과를 확인할 수 있도록 일시 정지
+        loadStudentsFromFile();
+        loadBooksFromFile();
+        system("pause");
         return 1;
     }
     else {
         printf("Login failed!\n");
-        system("pause"); // 결과를 확인할 수 있도록 일시 정지
+        system("pause");
         return 0;
     }
 }
 
-// 학생 추가 처리 함수
 void addStudent() {
     clearScreen();
     setCursorPosition(0, 0);
@@ -368,7 +347,6 @@ void addStudent() {
     system("pause");
 }
 
-// 모든 학생 정보 출력 함수
 void displayAllStudents() {
     clearScreen();
     setCursorPosition(0, 0);
@@ -398,17 +376,16 @@ void displayAllStudents() {
     system("pause");
 }
 
-// 학생 정보 수정 함수
 void updateStudent() {
     char name[30];
     clearScreen();
     printf("==============================\n");
     printf("|         학생 수정하기      |\n");
     printf("==============================\n");
-    getchar(); // To consume any leftover newline character
+    getchar();
     printf("수정할 학생의 이름을 적으세요: ");
     fgets(name, sizeof(name), stdin);
-    name[strcspn(name, "\n")] = 0; // Remove newline character
+    name[strcspn(name, "\n")] = 0; 
 
     struct student* temp = head_student;
     while (temp != NULL) {
@@ -476,7 +453,6 @@ void searchStudent() {
     system("pause");
 }
 
-// 책 추가 처리 함수
 void addBook() {
 
     clearScreen();
@@ -500,11 +476,11 @@ void addBook() {
     printf("출판일을 입력하세요: (YYYY/MM/DD): ");
     scanf("%s", temp->pub_date);
 
-    temp->available = 1; // 초기 상태는 이용 가능으로 설정
+    temp->available = 1;
     temp->NEXT = NULL;
 
-    strcpy(temp->loan_date, ""); // 대출 날짜 초기화
-    temp->available = 1; // 이용 가능 상태로 설정
+    strcpy(temp->loan_date, "");
+    temp->available = 1;
 
     if (head_book == NULL) {
         head_book = temp;
@@ -520,7 +496,6 @@ void addBook() {
     system("pause");
 }
 
-// 모든 책 정보 출력 함수
 void displayAllBooks() {
 
     clearScreen();
@@ -549,17 +524,16 @@ void displayAllBooks() {
     system("pause");
 }
 
-// 책 정보 수정 함수
 void updateBook() {
     char title[50];
     clearScreen();
     printf("==============================\n");
     printf("|          책 업데이트       |\n");
     printf("==============================\n");
-    getchar(); // To consume any leftover newline character
+    getchar();
     printf("Enter the title of the book to update: ");
     fgets(title, sizeof(title), stdin);
-    title[strcspn(title, "\n")] = 0; // Remove newline character
+    title[strcspn(title, "\n")] = 0;
 
     struct book* temp = head_book;
     while (temp != NULL) {
@@ -601,16 +575,16 @@ void handleLoanBook() {
             if (temp->available) {
                 printf("대출일 (YYYY/MM/DD): ");
                 scanf("%s", temp->loan_date);
-                temp->available = 0; // 대출 중으로 변경
+                temp->available = 0;
                 printf("책을 성공적으로 대출하였습니다!\n");
             }
             else {
                 strcpy(temp->loan_date, "");
-                temp->available = 1; // 이용 가능으로 변경
+                temp->available = 1;
                 printf("성공적으로 반납하였습니다!\n");
             }
 
-            saveBooksToFile(); // 책 정보를 저장
+            saveBooksToFile();
 
             system("pause");
             return;
@@ -628,10 +602,10 @@ void searchBook() {
     printf("==============================\n");
     printf("|          책 검색하기       |\n");
     printf("==============================\n");
-    getchar(); // To consume any leftover newline character
+    getchar();
     printf("Enter the title of the book to search: ");
     fgets(title, sizeof(title), stdin);
-    title[strcspn(title, "\n")] = 0; // Remove newline character
+    title[strcspn(title, "\n")] = 0;
 
     struct book* temp = head_book;
     int found = 0;
@@ -656,7 +630,6 @@ void searchBook() {
     system("pause");
 }
 
-// 로그인 후 메뉴 처리 함수
 void handleLoggedInMenu() {
     int selectedOption = 0;
 
@@ -664,10 +637,10 @@ void handleLoggedInMenu() {
         showLoggedInMenu(selectedOption);
 
         char key = _getch();
-        if (key == 72) { // 위쪽 화살표
+        if (key == 72) {
             selectedOption = (selectedOption == 0) ? 8 : (selectedOption - 1);
         }
-        else if (key == 80) { // 아래쪽 화살표
+        else if (key == 80) {
             selectedOption = (selectedOption == 9) ? 0 : (selectedOption + 1);
         }
         else if (key == '\r') {
@@ -716,17 +689,17 @@ int main() {
         showMainMenu(selectedOption);
 
         char key = _getch();
-        if (key == 72) { // 위쪽 화살표
+        if (key == 72) {
             selectedOption = (selectedOption == 0) ? 2 : (selectedOption - 1);
         }
-        else if (key == 80) { // 아래쪽 화살표
+        else if (key == 80) {
             selectedOption = (selectedOption == 2) ? 0 : (selectedOption + 1);
         }
-        else if (key == '\r') { // Enter 키
+        else if (key == '\r') {
             switch (selectedOption) {
             case 0:
                 if (handleLogin()) {
-                    failedLoginAttempts = 0; // Reset failed attempts on successful login
+                    failedLoginAttempts = 0;
                     handleLoggedInMenu();
                 }
                 else {
